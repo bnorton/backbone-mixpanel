@@ -40,6 +40,7 @@ Backbone.Mixpanel({ token: "abc123" })
 ```javascript
 var options = { // the default options
   token: "",
+  enabled: false,
   eventDataAttr: 'event'
   customData: [],
   userInfo: {},
@@ -52,6 +53,7 @@ Backbone.Mixpanel(options)
 
 ###Options
 `token` - The Mixpanel token from your dashboard. (Required)  
+`enabled` - Whether or not to log/track action to mixpanel (turn this on for production).  
 `eventDataAttr` - The data-* attribute on the DOM element that will generate the mixpanel tracking description.  
 `customData` - Any additional data-* attributes to look at for tracking metadata  
 `userInfo` - User specific data passed to `mixpanel.register` for contextual User info  
