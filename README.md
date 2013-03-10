@@ -1,16 +1,30 @@
 # Backbone.Mixpanel
 
-####Note: You no longer need the mixpanel tracking javascript in your rails templates.
+####Note: You no longer need the mixpanel javascript snippet (for init) in your rails templates.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'backbone-mixpanel'
+```ruby
+gem 'backbone-mixpanel'
+```
 
 And then execute:
 
     $ bundle
+    
+Add to application.js after backbone
+
+```javascript
+//= require backbone-mixpanel
+```
+    
+Remove the Mixpanel javascript code and init in favor of
+
+```javascript
+Backbone.Mixpanel.init(options)
+```
 
 ## Basic Usage
 
@@ -49,7 +63,14 @@ var options = { // the default options
 
 // Initialize mixpanel tracking and backbone-mixpanel:
 Backbone.Mixpanel.init(options)
+``` 
+
+**The add descriptions to event targets**
+
+```html
+  <span class='detail' data-event='Show Item Detail'>Details</span>
 ```
+
 
 ###Options
 `token` - The Mixpanel token from your dashboard. (Required)  
@@ -57,7 +78,7 @@ Backbone.Mixpanel.init(options)
 `eventDataAttr` - The data-* attribute on the DOM element that will generate the mixpanel tracking description.  
 `customData` - Any additional data-* attributes to look at for tracking metadata  
 `userInfo` - User specific data passed to `mixpanel.register` for contextual User info  
-`nameTag` - Some User identifier such as his/her name. Passed to `mixpanel.name_tag`  
+`nameTag` - Some User identifier such as his/her name. Passed to `mixpanel.name_tag` 
 
 
 ## Complete Example
