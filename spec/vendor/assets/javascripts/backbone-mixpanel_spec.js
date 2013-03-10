@@ -224,7 +224,7 @@ describe("Backbone.Mixpanel", function () {
         it("should wrap the error", function () {
           delegate();
 
-          expect(bbm.wrapEvent).toHaveBeenCalledWith(method);
+          expect(bbm.wrapEvent).toHaveBeenCalledWith(method, "click .some-class");
         });
       });
     });
