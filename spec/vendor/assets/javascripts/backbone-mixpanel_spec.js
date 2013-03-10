@@ -2,7 +2,7 @@ describe("Backbone.Mixpanel", function () {
   var bbm, options;
 
   var initialize = function() {
-    bbm = Backbone.Mixpanel(options);
+    bbm = Backbone.Mixpanel.init(options);
   };
 
   beforeEach(function () {
@@ -48,7 +48,7 @@ describe("Backbone.Mixpanel", function () {
       var message;
 
       beforeEach(function () {
-        message = "Backbone.Mixpanel requires the mixpanel token from your account.";
+        message = "Backbone.Mixpanel.init requires the mixpanel token from your account.";
 
         delete options.token;
       });
@@ -68,13 +68,19 @@ describe("Backbone.Mixpanel", function () {
       spyOn(bbm, "trackEvent");
       func = jasmine.createSpy("Function");
 
-      wrapped = bbm.wrapEvent(func);
+      wrapped = bbm.wrapEvent(func, "the default value");
       event = jasmine.createSpy("Event");
     });
 
     describe("when not given a function", function () {
       it("should error", function () {
          expect(function() { bbm.wrapEvent() }).toThrow("Wrapping requires a function to wrap");
+      });
+    });
+
+    describe("when not given a default value", function () {
+      it("should error", function () {
+         expect(function() { bbm.wrapEvent(func) }).toThrow("Wrapping requires a default description");
       });
     });
 
@@ -103,13 +109,13 @@ describe("Backbone.Mixpanel", function () {
 
       describe("when the event's target does not have a data attribute", function () {
         beforeEach(function () {
-          event.currentTarget = '<div>Some    Text \n  Here</div>';
+          event.currentTarget = '<div data-invalid=":/"></div>';
 
           wrapped(event);
         });
 
-        it("should log the element text", function () {
-          expect(bbm.trackEvent).toHaveBeenCalledWith("Some Text Here", {});
+        it("should log the default description", function () {
+          expect(bbm.trackEvent).toHaveBeenCalledWith("the default value", {});
         });
       });
     });
@@ -163,6 +169,64 @@ describe("Backbone.Mixpanel", function () {
       bbm.trackEvent(null, {extra: 'info', key: 'value'});
 
       expect(mixpanel.track).toHaveBeenCalledWith(null, {extra: 'info', key: 'value'});
+    });
+  });
+
+  describe("#delegateEvents", function () {
+    var view,
+        delegate = function() {
+          bbm.delegateEvents.call(view);
+        };
+
+    beforeEach(function () {
+      initialize();
+    });
+
+    describe("when the view has no events", function () {
+      beforeEach(function () {
+        view = {};
+      });
+
+      it("should not error", function () {
+        expect(function() { delegate() }).not.toThrow();
+      });
+    });
+
+    describe("when the view has an events hash", function () {
+      beforeEach(function () {
+        view = {
+          $el: { on: function() {} },
+          undelegateEvents: function() {},
+          events: {
+            "click .some-class": "clickSomeClass"
+          }
+        };
+      });
+
+      it("should error (no method on the view)", function () {
+        expect(function() { delegate() }).toThrow("Method \"clickSomeClass\" does not exist");
+      });
+
+      describe("when the method exists", function () {
+        var method;
+
+        beforeEach(function () {
+          spyOn(bbm, 'wrapEvent').andCallThrough();
+
+          method = function() { return "hey" };
+          view.clickSomeClass = method;
+        });
+
+        it("should not error", function () {
+          expect(function() { delegate() }).not.toThrow();
+        });
+
+        it("should wrap the error", function () {
+          delegate();
+
+          expect(bbm.wrapEvent).toHaveBeenCalledWith(method);
+        });
+      });
     });
   });
 });

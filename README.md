@@ -14,12 +14,12 @@ And then execute:
 
 ## Basic Usage
 
-###Backbone.Mixpanel(options)
+###Backbone.Mixpanel.init(options)
 
-Call the Backbone.Mixpanel method after including Backbone into your app
+Call the Backbone.Mixpanel.init method after including Backbone into your app
 
 ```javascript
-Backbone.Mixpanel({ token: "abc123" })
+Backbone.Mixpanel.init({ token: "abc123" })
 ```
 
 ## Usage
@@ -48,7 +48,7 @@ var options = { // the default options
 };
 
 // Initialize mixpanel tracking and backbone-mixpanel:
-Backbone.Mixpanel(options)
+Backbone.Mixpanel.init(options)
 ```
 
 ###Options
@@ -65,7 +65,7 @@ Backbone.Mixpanel(options)
 ####Initialize Backbone.Mixpanel
 
 ```javascript
-Backbone.Mixpanel({
+Backbone.Mixpanel.init({
   token: "abc123",
   customData: ['id', 'desc']
 })
